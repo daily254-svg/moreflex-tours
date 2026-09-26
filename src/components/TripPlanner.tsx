@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowLeft, ArrowRight, CheckCircle2, Sparkles } from "lucide-react";
 import { recommendJourney, type Interest } from "@/lib/journeyData";
 
 const travelers = [
@@ -38,6 +40,49 @@ const personaInterestMap: Record<string, Interest[]> = {
   business: ["luxury"],
   luxury: ["luxury"],
   budget: ["beach", "wildlife"],
+};
+
+function OptionButton({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <motion.button
+      onClick={onClick}
+      whileTap={{ scale: 0.97 }}
+      className={`relative rounded-xl border px-4 py-4 text-sm font-medium transition-colors ${
+        active
+          ? "border-gold bg-sand text-deep"
+          : "border-sand text-muted hover:bg-sand/50"
+      }`}
+    >
+      {children}
+      <AnimatePresence>
+        {active && (
+          <motion.span
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-gold text-deep"
+          >
+            <CheckCircle2 size={16} />
+          </motion.span>
+        )}
+      </AnimatePresence>
+    </motion.button>
+  );
+}
+
+const slideVariants = {
+  enter: { opacity: 0, x: 24 },
+  center: { opacity: 1, x: 0 },
+  exit: { opacity: 0, x: -24 },
 };
 
 export default function TripPlanner() {
@@ -77,8 +122,14 @@ export default function TripPlanner() {
 
   if (step === 5 && result) {
     return (
-      <div className="mx-auto max-w-3xl">
-        <p className="text-center text-sm font-semibold uppercase tracking-[0.2em] text-gold">
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        className="mx-auto max-w-3xl"
+      >
+        <p className="flex items-center justify-center gap-2 text-center text-sm font-semibold uppercase tracking-[0.2em] text-gold">
+          <Sparkles size={16} />
           We designed this journey just for you
         </p>
         <div className="mt-6 overflow-hidden rounded-2xl border border-sand bg-white">
@@ -95,13 +146,19 @@ export default function TripPlanner() {
             <p className="mt-1 text-muted">{result.destination}</p>
 
             <div className="mt-6 space-y-3">
-              {result.itinerary.map((step, i) => (
-                <div key={i} className="flex gap-3">
+              {result.itinerary.map((stepText, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, x: -16 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.4, delay: 0.15 + i * 0.08 }}
+                  className="flex gap-3"
+                >
                   <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gold text-xs font-semibold text-deep">
                     {i + 1}
                   </span>
-                  <p className="text-sm text-deep">{step}</p>
-                </div>
+                  <p className="text-sm text-deep">{stepText}</p>
+                </motion.div>
               ))}
             </div>
 
@@ -138,7 +195,7 @@ export default function TripPlanner() {
             </div>
           </div>
         </div>
-      </div>
+      </motion.div>
     );
   }
 
@@ -153,130 +210,140 @@ export default function TripPlanner() {
 
       <div className="mb-8 flex items-center gap-2">
         {[1, 2, 3, 4].map((s) => (
-          <div
-            key={s}
-            className={`h-1.5 flex-1 rounded-full ${
-              s <= step ? "bg-gold" : "bg-sand"
-            }`}
-          />
+          <div key={s} className="h-1.5 flex-1 overflow-hidden rounded-full bg-sand">
+            <motion.div
+              className="h-full rounded-full bg-gold"
+              initial={{ width: 0 }}
+              animate={{ width: s <= step ? "100%" : "0%" }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
+            />
+          </div>
         ))}
       </div>
 
-      <div className="rounded-2xl border border-sand bg-white p-8">
-        {step === 1 && (
-          <>
-            <h2 className="font-serif text-xl font-semibold text-deep">
-              Who are you traveling with?
-            </h2>
-            <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3">
-              {travelers.map((t) => (
-                <button
-                  key={t.id}
-                  onClick={() => setTravelerType(t.id)}
-                  className={`rounded-xl border px-4 py-4 text-sm font-medium transition-colors ${
-                    travelerType === t.id
-                      ? "border-gold bg-sand text-deep"
-                      : "border-sand text-muted hover:bg-sand/50"
-                  }`}
-                >
-                  {t.label}
-                </button>
-              ))}
-            </div>
-          </>
-        )}
+      <div className="overflow-hidden rounded-2xl border border-sand bg-white p-8">
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={step}
+            variants={slideVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+          >
+            {step === 1 && (
+              <>
+                <h2 className="font-serif text-xl font-semibold text-deep">
+                  Who are you traveling with?
+                </h2>
+                <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3">
+                  {travelers.map((t) => (
+                    <OptionButton
+                      key={t.id}
+                      active={travelerType === t.id}
+                      onClick={() => setTravelerType(t.id)}
+                    >
+                      {t.label}
+                    </OptionButton>
+                  ))}
+                </div>
+              </>
+            )}
 
-        {step === 2 && (
-          <>
-            <h2 className="font-serif text-xl font-semibold text-deep">
-              What&rsquo;s your budget per person?
-            </h2>
-            <div className="mt-6 grid grid-cols-2 gap-3">
-              {budgets.map((b) => (
-                <button
-                  key={b.id}
-                  onClick={() => setBudget(b.id)}
-                  className={`rounded-xl border px-4 py-4 text-sm font-medium transition-colors ${
-                    budget === b.id
-                      ? "border-gold bg-sand text-deep"
-                      : "border-sand text-muted hover:bg-sand/50"
-                  }`}
-                >
-                  {b.label}
-                </button>
-              ))}
-            </div>
-          </>
-        )}
+            {step === 2 && (
+              <>
+                <h2 className="font-serif text-xl font-semibold text-deep">
+                  What&rsquo;s your budget per person?
+                </h2>
+                <div className="mt-6 grid grid-cols-2 gap-3">
+                  {budgets.map((b) => (
+                    <OptionButton
+                      key={b.id}
+                      active={budget === b.id}
+                      onClick={() => setBudget(b.id)}
+                    >
+                      {b.label}
+                    </OptionButton>
+                  ))}
+                </div>
+              </>
+            )}
 
-        {step === 3 && (
-          <>
-            <h2 className="font-serif text-xl font-semibold text-deep">
-              What are you most excited about?
-            </h2>
-            <p className="mt-1 text-sm text-muted">Select all that apply.</p>
-            <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3">
-              {interestOptions.map((i) => (
-                <button
-                  key={i.id}
-                  onClick={() => toggleInterest(i.id)}
-                  className={`rounded-xl border px-4 py-4 text-sm font-medium transition-colors ${
-                    interests.includes(i.id)
-                      ? "border-gold bg-sand text-deep"
-                      : "border-sand text-muted hover:bg-sand/50"
-                  }`}
-                >
-                  {i.label}
-                </button>
-              ))}
-            </div>
-          </>
-        )}
+            {step === 3 && (
+              <>
+                <h2 className="font-serif text-xl font-semibold text-deep">
+                  What are you most excited about?
+                </h2>
+                <p className="mt-1 text-sm text-muted">Select all that apply.</p>
+                <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3">
+                  {interestOptions.map((i) => (
+                    <OptionButton
+                      key={i.id}
+                      active={interests.includes(i.id)}
+                      onClick={() => toggleInterest(i.id)}
+                    >
+                      {i.label}
+                    </OptionButton>
+                  ))}
+                </div>
+              </>
+            )}
 
-        {step === 4 && (
-          <>
-            <h2 className="font-serif text-xl font-semibold text-deep">
-              When are you thinking of traveling?
-            </h2>
-            <select
-              value={month}
-              onChange={(e) => setMonth(e.target.value)}
-              className="mt-6 w-full rounded-xl border border-sand px-4 py-3 outline-none focus:border-gold"
-            >
-              <option value="">Select a month</option>
-              {[
-                "January", "February", "March", "April", "May", "June",
-                "July", "August", "September", "October", "November", "December",
-              ].map((m) => (
-                <option key={m} value={m}>{m}</option>
-              ))}
-            </select>
-          </>
-        )}
+            {step === 4 && (
+              <>
+                <h2 className="font-serif text-xl font-semibold text-deep">
+                  When are you thinking of traveling?
+                </h2>
+                <select
+                  value={month}
+                  onChange={(e) => setMonth(e.target.value)}
+                  className="mt-6 w-full rounded-xl border border-sand px-4 py-3 outline-none transition-colors focus:border-gold"
+                >
+                  <option value="">Select a month</option>
+                  {[
+                    "January", "February", "March", "April", "May", "June",
+                    "July", "August", "September", "October", "November", "December",
+                  ].map((m) => (
+                    <option key={m} value={m}>{m}</option>
+                  ))}
+                </select>
+              </>
+            )}
+          </motion.div>
+        </AnimatePresence>
 
         <div className="mt-8 flex justify-between">
           <button
             onClick={() => setStep((s) => Math.max(1, s - 1))}
-            className={`text-sm font-semibold text-muted ${step === 1 ? "invisible" : ""}`}
+            className={`flex items-center gap-1 text-sm font-semibold text-muted transition-colors hover:text-deep ${
+              step === 1 ? "invisible" : ""
+            }`}
           >
-            ← Back
+            <ArrowLeft size={15} />
+            Back
           </button>
           {step < 4 ? (
-            <button
+            <motion.button
               disabled={!canProceed()}
               onClick={() => setStep((s) => s + 1)}
-              className="rounded-full bg-gold px-7 py-2.5 text-sm font-semibold text-deep transition-colors hover:bg-gold-light disabled:cursor-not-allowed disabled:opacity-40"
+              whileHover={canProceed() ? { scale: 1.03 } : {}}
+              whileTap={canProceed() ? { scale: 0.97 } : {}}
+              className="flex items-center gap-2 rounded-full bg-gold px-7 py-2.5 text-sm font-semibold text-deep transition-colors hover:bg-gold-light disabled:cursor-not-allowed disabled:opacity-40"
             >
-              Continue →
-            </button>
+              Continue
+              <ArrowRight size={15} />
+            </motion.button>
           ) : (
-            <button
+            <motion.button
               disabled={!canProceed()}
               onClick={generate}
-              className="rounded-full bg-gold px-7 py-2.5 text-sm font-semibold text-deep transition-colors hover:bg-gold-light disabled:cursor-not-allowed disabled:opacity-40"
+              whileHover={canProceed() ? { scale: 1.03 } : {}}
+              whileTap={canProceed() ? { scale: 0.97 } : {}}
+              className="flex items-center gap-2 rounded-full bg-gold px-7 py-2.5 text-sm font-semibold text-deep transition-colors hover:bg-gold-light disabled:cursor-not-allowed disabled:opacity-40"
             >
               Design My Journey
-            </button>
+              <Sparkles size={15} />
+            </motion.button>
           )}
         </div>
       </div>

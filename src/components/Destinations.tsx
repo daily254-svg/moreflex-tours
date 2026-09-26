@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+import Reveal, { RevealGroup, RevealItem } from "./Reveal";
 
 const destinations = [
   {
@@ -30,7 +32,7 @@ const destinations = [
 export default function Destinations() {
   return (
     <section className="mx-auto max-w-7xl px-6 py-24 lg:px-10">
-      <div className="mb-12 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
+      <Reveal className="mb-12 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
         <div>
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-gold">
             Discover
@@ -41,37 +43,46 @@ export default function Destinations() {
         </div>
         <Link
           href="/destinations"
-          className="text-sm font-semibold text-deep underline decoration-gold decoration-2 underline-offset-4"
+          className="group inline-flex items-center gap-1 text-sm font-semibold text-deep underline decoration-gold decoration-2 underline-offset-4"
         >
-          View all destinations →
+          View all destinations
+          <ArrowRight
+            size={15}
+            className="transition-transform group-hover:translate-x-1"
+          />
         </Link>
-      </div>
+      </Reveal>
 
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      <RevealGroup
+        className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4"
+        stagger={0.12}
+      >
         {destinations.map((d) => (
-          <Link
-            key={d.name}
-            href={d.href}
-            className="group relative flex h-96 flex-col justify-end overflow-hidden rounded-2xl"
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={d.img}
-              alt={d.name}
-              className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-deep/95 via-deep/30 to-transparent" />
-            <div className="relative z-10 p-6">
-              <p className="text-xs font-semibold uppercase tracking-wider text-gold-light">
-                {d.name}
-              </p>
-              <p className="mt-1 font-serif text-xl font-semibold text-cream">
-                {d.hook}
-              </p>
-            </div>
-          </Link>
+          <RevealItem key={d.name}>
+            <Link
+              href={d.href}
+              className="group relative flex h-96 flex-col justify-end overflow-hidden rounded-2xl"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={d.img}
+                alt={d.name}
+                loading="lazy"
+                className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-deep/95 via-deep/30 to-transparent transition-opacity duration-500 group-hover:from-deep/98" />
+              <div className="relative z-10 p-6 transition-transform duration-500 group-hover:-translate-y-1">
+                <p className="text-xs font-semibold uppercase tracking-wider text-gold-light">
+                  {d.name}
+                </p>
+                <p className="mt-1 font-serif text-xl font-semibold text-cream">
+                  {d.hook}
+                </p>
+              </div>
+            </Link>
+          </RevealItem>
         ))}
-      </div>
+      </RevealGroup>
     </section>
   );
 }

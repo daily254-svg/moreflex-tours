@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ChevronDown, Menu, X } from "lucide-react";
 import { navItems } from "@/lib/nav";
 
 export default function NavBar() {
@@ -21,12 +23,18 @@ export default function NavBar() {
             <div key={item.href} className="group relative">
               <Link
                 href={item.href}
-                className="text-sm font-medium text-cream/85 transition-colors hover:text-gold-light"
+                className="flex items-center gap-1 text-sm font-medium text-cream/85 transition-colors hover:text-gold-light"
               >
                 {item.label}
+                {item.children && (
+                  <ChevronDown
+                    size={14}
+                    className="transition-transform duration-300 group-hover:rotate-180"
+                  />
+                )}
               </Link>
               {item.children && (
-                <div className="invisible absolute left-0 top-full pt-3 opacity-0 transition-all group-hover:visible group-hover:opacity-100">
+                <div className="invisible absolute left-0 top-full pt-3 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 translate-y-1">
                   <div className="min-w-[200px] rounded-lg border border-white/10 bg-deep-light py-2 shadow-xl">
                     {item.children.map((child) => (
                       <Link
@@ -58,39 +66,58 @@ export default function NavBar() {
           onClick={() => setOpen(!open)}
           aria-label="Toggle menu"
         >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            {open ? (
-              <path d="M6 6l12 12M18 6L6 18" strokeWidth="2" strokeLinecap="round" />
-            ) : (
-              <path d="M3 6h18M3 12h18M3 18h18" strokeWidth="2" strokeLinecap="round" />
-            )}
-          </svg>
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.span
+              key={open ? "close" : "menu"}
+              initial={{ opacity: 0, rotate: -90 }}
+              animate={{ opacity: 1, rotate: 0 }}
+              exit={{ opacity: 0, rotate: 90 }}
+              transition={{ duration: 0.2 }}
+              className="flex"
+            >
+              {open ? <X size={24} /> : <Menu size={24} />}
+            </motion.span>
+          </AnimatePresence>
         </button>
       </nav>
 
-      {open && (
-        <div className="border-t border-white/10 bg-deep px-6 py-4 lg:hidden">
-          <div className="flex flex-col gap-4">
-            {navItems.map((item) => (
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+            className="overflow-hidden border-t border-white/10 bg-deep lg:hidden"
+          >
+            <div className="flex flex-col gap-4 px-6 py-4">
+              {navItems.map((navItem, i) => (
+                <motion.div
+                  key={navItem.href}
+                  initial={{ opacity: 0, x: -12 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.25, delay: i * 0.04 }}
+                >
+                  <Link
+                    href={navItem.href}
+                    onClick={() => setOpen(false)}
+                    className="text-sm font-medium text-cream/85 hover:text-gold-light"
+                  >
+                    {navItem.label}
+                  </Link>
+                </motion.div>
+              ))}
               <Link
-                key={item.href}
-                href={item.href}
+                href="/trip-planner"
                 onClick={() => setOpen(false)}
-                className="text-sm font-medium text-cream/85 hover:text-gold-light"
+                className="mt-2 rounded-full bg-gold px-5 py-2.5 text-center text-sm font-semibold text-deep"
               >
-                {item.label}
+                Start Planning
               </Link>
-            ))}
-            <Link
-              href="/trip-planner"
-              onClick={() => setOpen(false)}
-              className="mt-2 rounded-full bg-gold px-5 py-2.5 text-center text-sm font-semibold text-deep"
-            >
-              Start Planning
-            </Link>
-          </div>
-        </div>
-      )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }
