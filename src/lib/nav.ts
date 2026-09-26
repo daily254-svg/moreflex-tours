@@ -5,7 +5,6 @@ export type NavItem = {
 };
 
 export const navItems: NavItem[] = [
-  { label: "Home", href: "/" },
   {
     label: "Destinations",
     href: "/destinations",
@@ -31,7 +30,7 @@ export const navItems: NavItem[] = [
     ],
   },
   {
-    label: "Aviation Services",
+    label: "Aviation",
     href: "/aviation-services",
     children: [
       { label: "Flight Booking", href: "/aviation-services#flight-booking" },
@@ -40,9 +39,8 @@ export const navItems: NavItem[] = [
       { label: "VIP Meet & Greet", href: "/aviation-services#vip-meet-greet" },
     ],
   },
-  { label: "Trip Planner", href: "/trip-planner" },
   {
-    label: "Travel Resources",
+    label: "Resources",
     href: "/travel-resources",
     children: [
       { label: "Destination Guides", href: "/destinations" },

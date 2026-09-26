@@ -18,12 +18,12 @@ export default function NavBar() {
           </span>
         </Link>
 
-        <div className="hidden items-center gap-8 lg:flex">
+        <div className="hidden items-center gap-6 xl:flex">
           {navItems.map((item) => (
             <div key={item.href} className="group relative">
               <Link
                 href={item.href}
-                className="flex items-center gap-1 text-sm font-medium text-cream/85 transition-colors hover:text-gold-light"
+                className="flex items-center gap-1 text-sm font-medium whitespace-nowrap text-cream/85 transition-colors hover:text-gold-light"
               >
                 {item.label}
                 {item.children && (
@@ -52,17 +52,17 @@ export default function NavBar() {
           ))}
         </div>
 
-        <div className="hidden lg:block">
+        <div className="hidden xl:block">
           <Link
             href="/trip-planner"
-            className="rounded-full bg-gold px-5 py-2.5 text-sm font-semibold text-deep transition-colors hover:bg-gold-light"
+            className="rounded-full bg-gold px-5 py-2.5 text-sm font-semibold whitespace-nowrap text-deep transition-colors hover:bg-gold-light"
           >
             Start Planning
           </Link>
         </div>
 
         <button
-          className="text-cream lg:hidden"
+          className="text-cream xl:hidden"
           onClick={() => setOpen(!open)}
           aria-label="Toggle menu"
         >
@@ -88,9 +88,9 @@ export default function NavBar() {
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-            className="overflow-hidden border-t border-white/10 bg-deep lg:hidden"
+            className="overflow-hidden border-t border-white/10 bg-deep xl:hidden"
           >
-            <div className="flex flex-col gap-4 px-6 py-4">
+            <div className="flex max-h-[70vh] flex-col gap-4 overflow-y-auto px-6 py-4">
               {navItems.map((navItem, i) => (
                 <motion.div
                   key={navItem.href}
