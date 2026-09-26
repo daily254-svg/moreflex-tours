@@ -21,7 +21,7 @@ export default function ContactPage() {
     <>
       <NavBar />
       <main className="flex-1">
-        <section className="relative flex h-[38vh] min-h-[280px] items-end">
+        <section className="relative flex min-h-[280px] items-end sm:min-h-[38vh]">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="https://images.unsplash.com/photo-1517824806704-9040b037703b?q=80&w=1920&auto=format&fit=crop"

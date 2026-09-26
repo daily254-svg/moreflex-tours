@@ -53,7 +53,7 @@ export default function Hero() {
   }, []);
 
   return (
-    <section className="relative flex h-[92vh] min-h-[640px] w-full items-center overflow-hidden bg-deep">
+    <section className="relative flex min-h-[640px] w-full items-center overflow-hidden bg-deep sm:min-h-[92vh]">
       <AnimatePresence>
         {slides.map(
           (slide, i) =>
@@ -79,7 +79,7 @@ export default function Hero() {
         variants={container}
         initial="hidden"
         animate="visible"
-        className="relative z-10 mx-auto w-full max-w-7xl px-6 pt-20 lg:px-10"
+        className="relative z-10 mx-auto w-full max-w-7xl px-6 pt-24 pb-16 lg:px-10"
       >
         <motion.p
           variants={item}
@@ -96,7 +96,7 @@ export default function Hero() {
         </motion.h1>
         <motion.p
           variants={item}
-          className="mt-6 max-w-xl text-lg leading-relaxed text-cream/85"
+          className="mt-6 max-w-xl text-base leading-relaxed text-cream/85 sm:text-lg"
         >
           From unforgettable safaris to seamless flights, luxury stays, and
           curated adventures — MoreFlex Travel brings every part of your

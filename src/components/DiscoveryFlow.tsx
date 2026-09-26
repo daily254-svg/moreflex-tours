@@ -28,7 +28,7 @@ const personas: { icon: LucideIcon; label: string; slug: string }[] = [
 
 export default function DiscoveryFlow() {
   return (
-    <section className="relative -mt-16 z-20 px-6 lg:px-10">
+    <section className="relative -mt-8 z-20 px-6 sm:-mt-16 lg:px-10">
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}

@@ -32,7 +32,7 @@ export default function SectionListPage({
       <NavBar />
       <main className="flex-1">
         {heroImg ? (
-          <section className="relative flex h-[50vh] min-h-[380px] items-end">
+          <section className="relative flex min-h-[380px] items-end sm:min-h-[50vh]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={heroImg}

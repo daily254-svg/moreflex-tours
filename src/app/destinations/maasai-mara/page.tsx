@@ -61,7 +61,7 @@ export default function MaasaiMaraPage() {
     <>
       <NavBar />
       <main className="flex-1">
-        <section className="relative flex h-[70vh] min-h-[480px] items-end">
+        <section className="relative flex min-h-[480px] items-end sm:min-h-[70vh]">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="https://images.unsplash.com/photo-1493246507139-91e8fad9978e?q=80&w=1920&auto=format&fit=crop"
